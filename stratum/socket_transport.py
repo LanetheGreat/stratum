@@ -32,15 +32,23 @@ class SocketTransportFactory(ServerFactory):
 class SocketTransportClientFactory(ReconnectingClientFactory):
     def __init__(self, host, port, allow_trusted=True, allow_untrusted=False,
                  debug=False, signing_key=None, signing_id=None,
+                 on_connect=None, on_disconnect=None,
                  is_reconnecting=True, proxy=None,
                  event_handler=GenericEventHandler):
+
+        if on_connect is None:
+            on_connect = defer.Deferred()
+
+        if on_disconnect is None:
+            on_disconnect = defer.Deferred()
+
         self.debug = debug
         self.is_reconnecting = is_reconnecting
         self.signing_key = signing_key
         self.signing_id = signing_id
         self.client = None  # Reference to open connection
-        self.on_disconnect = defer.Deferred()
-        self.on_connect = defer.Deferred()
+        self.on_disconnect = on_disconnect
+        self.on_connect = on_connect
         self.peers_trusted = {}
         self.peers_untrusted = {}
         self.main_host = (host, port)
