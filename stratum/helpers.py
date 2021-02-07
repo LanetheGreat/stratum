@@ -4,7 +4,7 @@ from twisted.internet.protocol import Protocol
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 from twisted.web.iweb import IBodyProducer
-from zope.interface import implements
+from zope.interface import implementer
 
 from . import settings
 
@@ -22,9 +22,9 @@ class ResponseCruncher(Protocol):
         self.finished.callback(self.response)
 
 
+@implementer(IBodyProducer)
 class StringProducer:
     '''Helper for get_page()'''
-    implements(IBodyProducer)
 
     def __init__(self, body):
         self.body = body

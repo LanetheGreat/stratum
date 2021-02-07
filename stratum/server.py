@@ -14,14 +14,14 @@ def setup(setup_event=None):
     application = service.Application("stratum-server")
 
     # Setting up logging
-    from twisted.python.log import ILogObserver, FileLogObserver
-    from twisted.python.logfile import DailyLogFile
+    # from twisted.python.log import ILogObserver, FileLogObserver
+    # from twisted.python.logfile import DailyLogFile
 
     # logfile = DailyLogFile(settings.LOGFILE, settings.LOGDIR)
     # application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 
     if settings.ENABLE_EXAMPLE_SERVICE:
-        import stratum.example_service
+        import stratum.example_service  # @UnusedImport
 
     if setup_event is None:
         setup_finalize(None, application)
@@ -99,7 +99,7 @@ def setup_finalize(event, application):
             https.setServiceParent(application)
 
     if settings.LISTEN_WS_TRANSPORT:
-        from autobahn.websocket import listenWS
+        from autobahn.twisted.websocket import listenWS
         log.msg("Starting WS transport on %d" % settings.LISTEN_WS_TRANSPORT)
         ws = websocket_transport.WebsocketTransportFactory(
             settings.LISTEN_WS_TRANSPORT,
@@ -111,7 +111,7 @@ def setup_finalize(event, application):
         listenWS(ws)
 
     if settings.LISTEN_WSS_TRANSPORT and sslContext:
-        from autobahn.websocket import listenWS
+        from autobahn.twisted.websocket import listenWS
         log.msg("Starting WSS transport on %d" % settings.LISTEN_WSS_TRANSPORT)
         wss = websocket_transport.WebsocketTransportFactory(
             settings.LISTEN_WSS_TRANSPORT, is_secure=True,

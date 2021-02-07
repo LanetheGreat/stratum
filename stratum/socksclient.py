@@ -7,7 +7,7 @@ from twisted.internet import defer
 from twisted.internet.endpoints import _WrappingFactory
 from twisted.internet.interfaces import IStreamClientEndpoint
 from twisted.internet.protocol import Protocol, ClientFactory
-from zope.interface import implements
+from zope.interface import implementer
 
 
 class SOCKSError(Exception):
@@ -81,8 +81,8 @@ class SOCKSv4ClientFactory(ClientFactory):
         return r
 
 
+@implementer(IStreamClientEndpoint)
 class SOCKSWrapper:
-    implements(IStreamClientEndpoint)
     factory = SOCKSv4ClientFactory
 
     def __init__(self, reactor, host, port, endpoint):

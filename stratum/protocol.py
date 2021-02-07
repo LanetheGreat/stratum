@@ -4,15 +4,13 @@ from twisted.internet import defer, error
 from twisted.protocols.basic import LineOnlyReceiver
 from twisted.python.failure import Failure
 
-# from . import services
-# from . import jsonical
 from . import connection_registry
 from . import custom_exceptions
+from . import logger
 from . import settings
 from . import signature
 from . import stats
 
-from . import logger
 log = logger.get_logger('protocol')
 
 
