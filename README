@@ -36,7 +36,7 @@ Configuration
 =============
 
 a) Basic configuration
-Copy config_default.py to config.py
+Copy variables from settings.py to config.py
 Edit at least those values: HOSTNAME, BITCOIN_TRUSTED_*
 
 b) Message signatures

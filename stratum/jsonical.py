@@ -48,13 +48,13 @@ Using jsonical from the shell to canonicalize:
 import datetime
 import decimal
 import sys
-import types
 import unicodedata
 
 try:
     import json
 except ImportError:
     import simplejson as json
+
 
 class Encoder(json.JSONEncoder):
     def __init__(self, *args, **kwargs):
@@ -68,7 +68,7 @@ class Encoder(json.JSONEncoder):
         """
         if isinstance(obj, (datetime.date, datetime.time, datetime.datetime)):
             return '"%s"' % obj.isoformat()
-        elif isinstance(obj, unicode):
+        elif isinstance(obj, str):
             return '"%s"' % unicodedata.normalize('NFD', obj).encode('utf-8')
         elif isinstance(obj, decimal.Decimal):
             return str(obj)
@@ -77,24 +77,30 @@ class Encoder(json.JSONEncoder):
     def _iterencode_default(self, o, markers=None):
         yield self.default(o)
 
+
 def dump(obj, fp, indent=None):
     return json.dump(obj, fp, separators=(',', ':'), indent=indent, cls=Encoder)
+
 
 def dumps(obj, indent=None):
     return json.dumps(obj, separators=(',', ':'), indent=indent, cls=Encoder)
 
+
 class Decoder(json.JSONDecoder):
     def raw_decode(self, s, **kw):
         obj, end = super(Decoder, self).raw_decode(s, **kw)
-        if isinstance(obj, types.StringTypes):
-            obj = unicodedata.normalize('NFD', unicode(obj))
+        if isinstance(obj, str):
+            obj = unicodedata.normalize('NFD', str(obj))
         return obj, end
+
 
 def load(fp):
     return json.load(fp, cls=Decoder, parse_float=decimal.Decimal)
 
+
 def loads(s):
     return json.loads(s, cls=Decoder, parse_float=decimal.Decimal)
+
 
 def tool():
     infile = sys.stdin
@@ -107,10 +113,11 @@ def tool():
         raise SystemExit("{0} [infile [outfile]]".format(sys.argv[0]))
     try:
         obj = load(infile)
-    except ValueError, e:
+    except ValueError as e:
         raise SystemExit(e)
     dump(obj, outfile)
     outfile.write('\n')
+
 
 if __name__ == '__main__':
     tool()
