@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import find_packages, setup
+from setuptools import setup
 from stratum import version
 
 classifiers = [
@@ -37,7 +37,8 @@ setup(
     platforms='OS Independent (Written in an interpreted language)',
     license='GNU General Public License v3 or later (GPLv3+)',
     url='http://blog.bitcoin.cz/stratum',
-    packages=find_packages('stratum'),
+    packages=['stratum'],
+    package_dir={'stratum': 'stratum'},
     zip_safe=True,
     classifiers=classifiers,
     install_requires=install_requires,
