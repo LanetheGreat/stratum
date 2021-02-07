@@ -1,16 +1,17 @@
 from twisted.internet import defer
 
+
 class Semaphore:
     """A semaphore for event driven systems."""
 
     def __init__(self, tokens):
         self.waiting = []
-        self.tokens  = tokens
-        self.limit   = tokens
+        self.tokens = tokens
+        self.limit = tokens
 
     def is_locked(self):
         return (bool)(not self.tokens)
-    
+
     def acquire(self):
         """Attempt to acquire the token.
 
@@ -49,6 +50,7 @@ class Semaphore:
         @return Deferred of function result.
         """
         d = self.acquire()
-        d.addCallback(lambda r: defer.maybeDeferred(f, *args,
-            **kwargs).addBoth(self._releaseAndReturn))
+        d.addCallback(
+            lambda r: defer.maybeDeferred(f, *args, **kwargs).addBoth(self._releaseAndReturn),
+        )
         return d
