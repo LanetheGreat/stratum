@@ -3,17 +3,20 @@
 
 import socket
 import struct
-from zope.interface import implements
 from twisted.internet import defer
+from twisted.internet.endpoints import _WrappingFactory
 from twisted.internet.interfaces import IStreamClientEndpoint
 from twisted.internet.protocol import Protocol, ClientFactory
-from twisted.internet.endpoints import _WrappingFactory
+from zope.interface import implements
+
 
 class SOCKSError(Exception):
     def __init__(self, val):
         self.val = val
+
     def __str__(self):
         return repr(self.val)
+
 
 class SOCKSv4ClientProtocol(Protocol):
     buf = ''
@@ -66,17 +69,19 @@ class SOCKSv4ClientProtocol(Protocol):
             self.transport.protocol.connectionMade()
             self.handshakeDone.callback(self.transport.getPeer())
 
+
 class SOCKSv4ClientFactory(ClientFactory):
     protocol = SOCKSv4ClientProtocol
 
     def buildProtocol(self, addr):
-        r=ClientFactory.buildProtocol(self, addr)
+        r = ClientFactory.buildProtocol(self, addr)
         r.postHandshakeEndpoint = self.postHandshakeEndpoint
         r.postHandshakeFactory = self.postHandshakeFactory
         r.handshakeDone = self.handshakeDone
         return r
 
-class SOCKSWrapper(object):
+
+class SOCKSWrapper:
     implements(IStreamClientEndpoint)
     factory = SOCKSv4ClientFactory
 
@@ -102,5 +107,5 @@ class SOCKSWrapper(object):
             wf = _WrappingFactory(f)
             self._reactor.connectTCP(self._host, self._port, wf)
             return f.handshakeDone
-        except: 
-            return defer.fail() 
+        except Exception:
+            return defer.fail()
