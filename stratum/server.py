@@ -8,7 +8,7 @@ def setup(setup_event=None):
     try:
         from . import settings
     except ImportError:
-        print('***** Is configs.py missing? Maybe you want to copy and customize config_default.py?')
+        print('***** Is configs.py missing? Maybe you want to copy and customize settings from settings.py?')
 
     from twisted.application import service
     application = service.Application("stratum-server")
